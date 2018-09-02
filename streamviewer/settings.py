@@ -10,22 +10,36 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
+import json
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SECRET = {}
 
+with open('secret.json') as f:
+    SECRET = json.load(f)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['STREAMVIEWER_SECRET_KEY']
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if ('STREAMVIEWER_ENV' in os.environ and os.environ['STREAMVIEWER_ENV'] == 'prod'):
+    SECRET = SECRET['prod']
+    ALLOWED_HOSTS = []
+    DEBUG = False
+else:
+    SECRET = SECRET['dev']
+    ALLOWED_HOSTS = []
+    DEBUG = True
 
-ALLOWED_HOSTS = []
+SECRET_KEY = SECRET['STREAMVIEWER_SECRET_KEY']
+DB_NAME = SECRET['DB_NAME']
+DB_USER_NAME = SECRET['DB_USER_NAME']
+DB_PASSWORD = SECRET['DB_PASSWORD']
+DB_HOST = SECRET['DB_HOST']
+DB_PORT = SECRET['DB_PORT']
 
 # Application definition
 
@@ -36,9 +50,24 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'svapp',
+    'corsheaders',
     'rest_framework',
-    'svapp'
+    'rest_framework.authtoken',
+    'social_django',
+    'rest_social_auth',
+    'oauth2_provider',
+    'rest_framework_social_oauth2',
 ]
+
+SOCIAL_AUTH_RAISE_EXCEPTIONS = True
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = SECRET['GOOGLE_CLIENT_ID']
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = SECRET['GOOGLE_SECRET']
+print(SECRET['GOOGLE_CLIENT_ID'], SECRET['GOOGLE_SECRET'])
+CSRF_COOKIE_SECURE = False
+CORS_ORIGIN_ALLOW_ALL = True
+ROOT_URLCONF = 'streamviewer.urls'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -48,9 +77,21 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
-ROOT_URLCONF = 'streamviewer.urls'
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
+        'rest_framework_social_oauth2.authentication.SocialAuthentication',
+    ),
+}
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'rest_framework_social_oauth2.backends.DjangoOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 TEMPLATES = [
     {
@@ -63,6 +104,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -70,17 +113,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'streamviewer.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': DB_NAME,
+        'USER': DB_USER_NAME,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': DB_HOST,
+        'PORT': DB_PORT,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -100,20 +145,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'US/Mountain'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/

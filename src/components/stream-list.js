@@ -31,16 +31,16 @@ class StreamList extends Component {
       if (!isInitializing) {
         return <Redirect to='/'/>;
       }
+      // TODO: render a loading component
       return null;
     }
     else {
+      // TODO: can spawn multiple requests at once
       if (streams.length === 0) {
         this.getStreams((response) => {
           this.setState({'streams':  response.result.items});
         });
       }
-
-      console.log(streams);
 
       return (
         <div class='stream-list-container'>

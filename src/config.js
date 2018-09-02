@@ -3,5 +3,5 @@ export default {
   DISCOVERY_DOCS:[
     "https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest",
   ],
-  SCOPES: 'https://www.googleapis.com/auth/youtube.readonly',
+  SCOPES: 'https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.force-ssl',
 };

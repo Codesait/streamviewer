@@ -1,0 +1,23 @@
+.stream-flex-container {
+  align-items: center;
+  display: flex;
+  height: inherit;
+  margin: auto 0;
+  width: inherit;
+}
+
+.stream-flex-left,
+.stream-flex-center,
+.stream-flex-right {
+  display: flex;
+  flex: 1 1 0;
+}
+
+.stream-flex-center {
+  justify-content: space-around;
+}
+
+.stream-flex-right {
+  display: flex;
+  flex: 1 1 0;
+}

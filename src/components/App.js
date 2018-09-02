@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import config from '../config';
 import './App.css';
 
+import Auth from '../services/auth';
 import Main from './main';
 import Stream from './stream';
 import StreamList from './stream-list';
@@ -11,29 +12,12 @@ import StreamList from './stream-list';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.initClient = this.initClient.bind(this);
-    this.load = this.load.bind(this);
     this.updateSigninStatus = this.updateSigninStatus.bind(this);
     this.state = {isSignedIn: false, isInitializing: true};
   }
 
   componentDidMount() {
-    window.gapi.load('client:auth2', this.initClient);
-  }
-
-  initClient() {
-    window.gapi.client.init({
-      discoveryDocs: config.DISCOVERY_DOCS,
-      clientId: config.CLIENT_ID,
-      scope: config.SCOPES
-    }).then(this.load);
-  }
-
-  load(callback) {
-    window.gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSigninStatus);
-
-    // Handle the initial sign-in state.
-    this.updateSigninStatus(window.gapi.auth2.getAuthInstance().isSignedIn.get());
+    Auth.observeSignInStatus(this.updateSigninStatus);
   }
 
   updateSigninStatus(isSignedIn) {

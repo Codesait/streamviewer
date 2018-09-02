@@ -1,0 +1,22 @@
+.chat {
+  max-width: 80%;
+  max-height: 385px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.chat-messages {
+  background: #d7ffda;
+  overflow-y: scroll;
+  margin-bottom: 1em;
+  padding: 1em;
+}
+
+.chat-input > textarea {
+  width: 100% !important;
+  height: 40px !important;
+}
+
+.clear {clear: both;}

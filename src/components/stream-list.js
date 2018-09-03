@@ -41,7 +41,7 @@ class StreamList extends Component {
           this.setState({'streams':  response.result.items});
         });
       }
-
+      console.log(streams);
       return (
         <div class='stream-list-container'>
           {streams.map(stream => <div><StreamPreview data={stream}/></div>)}

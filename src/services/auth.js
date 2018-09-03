@@ -20,6 +20,9 @@ class Auth {
     this.apiToken = null;
     this.refreshToken = null;
     this.isInitialized = deferred();
+  }
+
+  initialize() {
     window.gapi.load('client:auth2', this.initClient);
   }
 
@@ -35,7 +38,6 @@ class Auth {
     window.gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSigninStatus);
     let isSignedIn = window.gapi.auth2.getAuthInstance().isSignedIn.get();
     this.updateSigninStatus(isSignedIn);
-    this.isInitialized.resolve();
   }
 
   observeSignInStatus(callback) {
@@ -47,6 +49,7 @@ class Auth {
 
     if (isSignedIn && this.apiToken == null) {
       await this.exchangeToken();
+      this.isInitialized.resolve();
     }
 
     this.notifyObservers();
@@ -79,6 +82,7 @@ class Auth {
   }
 
   getLocalAPIToken() {
+    console.log(this.apiToken);
     return this.apiToken;
   }
 }

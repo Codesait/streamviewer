@@ -16,11 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path, include
 from django.views.generic import TemplateView
-from svapp.views import test
+from svapp.api.streams.views import StreamMessageView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('rest_framework_social_oauth2.urls')),
-    re_path(r'^api/stream/(?P<video_id>\w+)/message$', test),
+    path('api/', include('svapp.api.urls')),
     re_path('.*', TemplateView.as_view(template_name='index.html')),
 ]

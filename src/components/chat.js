@@ -27,7 +27,6 @@ class Chat extends Component {
   async sendMessageToYTandLocal(message, liveChatId) {
     try {
       //await this.sendLiveStreamMessage(message, this.state.liveChatId);
-      console.log(StreamViewerAPI.sendMessageToChat);
       await StreamViewerAPI.sendMessageToChat(message, this.state.videoId);
     } catch(err) {
       console.error("Error sending live stream message.", err);

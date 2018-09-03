@@ -18,6 +18,7 @@ class App extends Component {
 
   componentDidMount() {
     Auth.observeSignInStatus(this.updateSigninStatus);
+    Auth.initialize();
   }
 
   updateSigninStatus(isSignedIn) {
@@ -30,7 +31,7 @@ class App extends Component {
         <Switch>
           <Route exact path='/' render={props => <Main isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
           <Route path='/home' render={props => <StreamList isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
-          <Route path='/stream/:id' render={props => <Stream isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
+          <Route path='/streams/:id' render={props => <Stream isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
         </Switch>
       </div>
     );

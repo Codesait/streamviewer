@@ -11,7 +11,7 @@ class StreamPreview extends Component {
   render() {
     return (
       <div class='stream-preview'>
-        <a href={'./streams/' + this.props.data.id.videoId}>
+        <a href={'/streams/' + this.props.data.id.videoId + '/'}>
           <img src={this.props.data.snippet.thumbnails.medium.url}></img>
         </a>
       </div>

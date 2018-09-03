@@ -8,6 +8,7 @@ import Auth from '../services/auth';
 import Main from './main';
 import Stream from './stream';
 import StreamList from './stream-list';
+import StreamStats from './stream-stats';
 
 class App extends Component {
   constructor(props) {
@@ -30,8 +31,9 @@ class App extends Component {
       <div className='App'>
         <Switch>
           <Route exact path='/' render={props => <Main isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
-          <Route path='/home' render={props => <StreamList isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
-          <Route path='/streams/:id' render={props => <Stream isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
+          <Route path='/home/' render={props => <StreamList isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
+          <Route path='/streams/:id/' render={props => <Stream isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
+          <Route path='/streams/:id/stats/' render={props => <StreamStats isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
         </Switch>
       </div>
     );

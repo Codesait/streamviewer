@@ -20,3 +20,4 @@ class Message(models.Model):
     )
     live_chat = models.ForeignKey(LiveChat, on_delete=models.CASCADE)
     text = models.CharField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)

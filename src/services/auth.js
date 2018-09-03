@@ -82,7 +82,6 @@ class Auth {
   }
 
   getLocalAPIToken() {
-    console.log(this.apiToken);
     return this.apiToken;
   }
 }

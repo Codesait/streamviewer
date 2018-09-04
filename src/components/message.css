@@ -1,3 +1,27 @@
 .message {
-  padding: 0.25em;
+  border-radius: 0.5rem;
+  color: #333;
+  display: flex;
+  line-height: 1rem;
+  margin: 0.5rem;
+}
+
+.message-author {
+  font-weight: bold;
+  padding-right: 0.5rem;
+}
+
+.message-author-thumbnail > img {
+  border-radius: 1em;
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.message-text-fields {
+  margin-top: 0.25rem;
+  padding-left: 0.5rem;
+}
+
+.message-text-fields > p {
+  display: inline;
 }

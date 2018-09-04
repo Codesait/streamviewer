@@ -1,5 +1,7 @@
 import svapp.api.youtube as youtube
 
+from django.core import serializers
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Count, F
 from django.views.decorators.csrf import csrf_exempt
 from oauth2_provider.decorators import protected_resource
@@ -16,7 +18,10 @@ from svapp.models import Channel, Video, LiveChat, Message
 def StreamMessageView(request, video_id):
 
     if ('message' not in request.data or len(request.data['message']) > 200):
-        return Response({'details':'Message must between (0, 200] characters long.'}, status=400)
+        err = {
+            'details': 'Message must between (0, 200] characters long.'
+        }
+        return Response(err, status=400)
 
     text = request.data['message']
     string_token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[-1]
@@ -58,15 +63,26 @@ def StreamMessageView(request, video_id):
 def StreamSearchView(request, video_id):
 
     if (not request.query_params):
-        return Response({'details':'Must include search query parameters (e.g ?username-starts-with="abc").'}, status=400)
+        err = {
+            'details': 'Must include search query parameters \
+                        (e.g ?username-starts-with="abc").'
+        }
+        return Response(err, status=400)
 
-    print(request.query_params);
+    page = request.query_params.get('page', '1')
     video = Video.objects.get(video_id=video_id)
     channel_id = video.channel_id
-    print(channel_id)
-    messages = Message.objects.filter(live_chat__video__channel_id=channel_id).filter(author__username__startswith=request.query_params['username-starts-with'])
-    for message in messages:
-        print (message.text)
+
+    messages = Message.objects.filter(live_chat__video__channel_id=channel_id)      \
+                              .filter(author__username__startswith=                 \
+                                      request.query_params['username-starts-with']) \
+                              .order_by('created_at')
+                              
+    paginator = Paginator(messages, 50)
+    messages = paginator.get_page(int(page))
+    serialized = serializers.serialize('json', messages)
+
+    return Response(serialized, status=200)
 
 @api_view(['GET'])
 @csrf_exempt
@@ -74,8 +90,13 @@ def StreamSearchView(request, video_id):
 def StreamStatsView(request, video_id):
     video = Video.objects.get(video_id=video_id)
     channel_id = video.channel_id
-    message_count_per_user = Message.objects.filter(live_chat__video__channel_id=channel_id).values('author').annotate(total=Count('author'), name=F('author__username'))
-    for i in message_count_per_user:
-        print(i)
 
-    return
+    order = request.query_params.get('order_by', '-total')
+
+    message_count_per_user = \
+        Message.objects.filter(live_chat__video__channel_id=channel_id)             \
+                       .values('author')                                            \
+                       .annotate(total=Count('author'), name=F('author__username')) \
+                       .order_by(order)
+
+    return Response(message_count_per_user, status=200)

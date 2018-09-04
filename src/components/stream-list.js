@@ -12,14 +12,18 @@ class StreamList extends Component {
     this.state = {streams: []};
   }
 
-  getStreams(callback) {
-    window.gapi.client.youtube.search.list({
+  async getStreams() {
+    this.retrievingStreams = true;
+    let response = await window.gapi.client.youtube.search.list({
       'part': 'snippet',
       'eventType': 'live',
       'videoEmbeddable': true,
       'maxResults': 25,
       'type': 'video',
-    }).then(callback);
+    });
+    this.retrievingStreams = false;
+    this.setState({'streams': response.result.items});
+    return response
   }
 
   render() {
@@ -35,13 +39,9 @@ class StreamList extends Component {
       return null;
     }
     else {
-      // TODO: can spawn multiple requests at once
-      if (streams.length === 0) {
-        this.getStreams((response) => {
-          this.setState({'streams':  response.result.items});
-        });
+      if (streams.length === 0 && !this.retrievingStreams) {
+        this.getStreams();
       }
-      console.log(streams);
       return (
         <div class='stream-list-container'>
           {streams.map(stream => <div><StreamPreview data={stream}/></div>)}

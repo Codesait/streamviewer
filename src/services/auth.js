@@ -14,11 +14,14 @@ class Auth {
     this.exchangeToken = this.exchangeToken.bind(this);
     this.notifyObservers = this.notifyObservers.bind(this);
     this.getLocalAPIToken = this.getLocalAPIToken.bind(this);
+    this.logout = this.logout.bind(this);
+    this.revokeToken = this.revokeToken.bind(this);
 
     this.listeners = [];
     this.isSignedIn = false;
     this.apiToken = null;
     this.refreshToken = null;
+    this.clientId = 'gJFOzyJyjtq4BPpSoWuTcvJYDxV7nXb2fN9ue4zo';
     this.isInitialized = deferred();
   }
 
@@ -56,22 +59,39 @@ class Auth {
   }
 
   async exchangeToken() {
-    if (this.isSignedIn && this.apiToken == null) {
-      try {
-        const token = window.gapi.auth.getToken();
-        const response = await axios.post('/auth/convert-token/', {
-          'grant_type': 'convert_token',
-          'client_id': 'gJFOzyJyjtq4BPpSoWuTcvJYDxV7nXb2fN9ue4zo',
-          'token': token.access_token,
-          'backend': 'google-oauth2'
-        });
-        const data = response.data;
-        this.apiToken = data.access_token;
-        this.refreshToken = data.refresh_token;
-      } catch (err) {
-        console.error('Error converting Google token.', err);
-      }
+    try {
+      const token = window.gapi.auth.getToken();
+      const response = await axios.post('/auth/convert-token/', {
+        'grant_type': 'convert_token',
+        'client_id': this.clientId,
+        'token': token.access_token,
+        'backend': 'google-oauth2'
+      });
+      const data = response.data;
+      this.apiToken = data.access_token;
+      this.refreshToken = data.refresh_token;
+    } catch (err) {
+      console.error('Error converting Google token.', err);
     }
+  }
+
+  async logout() {
+    await this.revokeToken();
+    window.gapi.auth2.getAuthInstance().signOut();
+  }
+
+  async revokeToken() {
+    try {
+      const token = window.gapi.auth.getToken();
+      const response = await axios.post('/auth/revoke-token', {
+        'client_id': this.clientId,
+        'token': token.access_token,
+      });
+      console.log(response);
+    } catch(err) {
+      console.error('Error revoking OAuth2 token.', err);
+    }
+
   }
 
   notifyObservers() {

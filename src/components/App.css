@@ -1,4 +1,5 @@
 body {
+  font-size: 12px;
   height: inherit;
   width: inherit;
 }
@@ -13,8 +14,16 @@ html {
   width: inherit;
 }
 
+.loader {
+  position: fixed;
+  top: 50%;
+}
+
 .App {
+  align-items: center;
   display: flex;
   height: inherit;
+  justify-content: center;
+  flex-wrap: wrap;
   width: inherit;
 }

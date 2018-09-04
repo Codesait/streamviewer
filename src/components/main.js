@@ -6,7 +6,7 @@ import {
 class Main extends Component {
   constructor(props) {
     super(props);
-    this.handleSignoutClick = this.handleSignoutClick.bind(this);
+    
     this.handleAuthClick = this.handleAuthClick.bind(this);
   }
 
@@ -14,12 +14,8 @@ class Main extends Component {
     window.gapi.auth2.getAuthInstance().signIn().then(this.handleProfileSuccess, this.handleProfileError);
   }
 
-  handleSignoutClick(event) {
-    window.gapi.auth2.getAuthInstance().signOut();
-  }
-
   handleProfileError(error) {
-    console.log(error);
+    console.error(error);
   }
 
   handleProfileSuccess(googleUser) {
@@ -43,14 +39,6 @@ const LoginButton = function(props) {
   return (
     <button onClick={props.onClick}>
       Login
-    </button>
-  );
-}
-
-const LogoutButton = function(props) {
-  return (
-    <button onClick={props.onClick}>
-      Logout
     </button>
   );
 }

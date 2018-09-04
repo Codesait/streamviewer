@@ -1,4 +1,5 @@
 .stream-list-container {
+  align-self: flex-start;
   display: flex;
   flex-wrap: wrap;
 }

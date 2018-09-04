@@ -6,12 +6,14 @@ import Message from './message';
 
 import './chat.css';
 
+//TODO: handle streams without live chats
+
 class Chat extends Component {
   constructor(props) {
     super(props);
     this.textArea = React.createRef();
     this.retrievingMessages = false;
-    this.state = {liveChatId: null, videoId: this.props.videoId, messages:[], authors:{}};
+    this.state = {liveChatId: null, videoId: this.props.videoId, messages:[], authors:{}, error: false};
 
     this.sendMessage = () => {
       // only send messages if we're authorized on youtube and our api
@@ -26,7 +28,7 @@ class Chat extends Component {
 
   async sendMessageToYTandLocal(message, liveChatId) {
     try {
-      //await this.sendLiveStreamMessage(message, this.state.liveChatId);
+      await this.sendLiveStreamMessage(message, this.state.liveChatId);
       await StreamViewerAPI.sendMessageToChat(message, this.state.videoId);
     } catch(err) {
       console.error("Error sending live stream message.", err);
@@ -51,6 +53,7 @@ class Chat extends Component {
 
   getVideoChatMessages(videoId) {
     this.getStreamingDetails(videoId, response => {
+      console.log('or here??', response);
       const videos = response.result.items;
       if (videos.length > 0) {
         if (videos[0].liveStreamingDetails) {
@@ -59,11 +62,14 @@ class Chat extends Component {
           this.getMessagesAndRecurse(liveChatId, '');
         }
       }
+    }, err => {
+      console.log(err);
     });
   }
 
   getMessagesAndRecurse(liveChatId, pageToken) {
     this.getStreamLiveMessages(liveChatId, pageToken, (response) => {
+      console.log(response);
       const messages = response.result.items;
       // TODO: ignore any messages that we've sent
       // because we've already pushed them to messages
@@ -86,6 +92,9 @@ class Chat extends Component {
       window.setTimeout(() => {
         this.getMessagesAndRecurse(liveChatId, response.result.nextPageToken)
       }, response.result.pollingIntervalMillis);
+    }, (error) => {
+      console.log('here??');
+      this.setState({error: true});
     });
   }
 
@@ -107,16 +116,32 @@ class Chat extends Component {
     }).then(callback);
   }
 
-  getStreamLiveMessages(liveChatId, pageToken, callback) {
+  getStreamLiveMessages(liveChatId, pageToken, successHandler, errorHandler) {
     window.gapi.client.youtube.liveChatMessages.list({
       'liveChatId': liveChatId,
       'part': 'snippet',
       ...(pageToken ? {'pageToken': pageToken} : '')
-    }).then(callback);
+    }).then(successHandler, errorHandler);
   }
 
   render() {
     let messages = this.state.messages;
+
+    if (this.state.error) {
+      return (
+        <div class='chat-error'>
+          <div class='error-heading'>
+            {"Sorry!"}
+          </div>
+          <div class='error-emoji'>
+            {"☹️"}
+          </div>
+          <div>
+            {"We couldn't find an associated chat for this video."}
+          </div>
+        </div>
+      )
+    }
 
     if (this.props.isSignedIn && messages.length === 0 && !this.retrievingMessages) {
       this.retrievingMessages = true;
@@ -130,7 +155,6 @@ class Chat extends Component {
         </div>
         <div class='chat-input'>
           <textarea ref={(textArea) => this.textArea = textArea} placeholder='Send chat message'></textarea>
-          <div class='clear'></div>
           <button type='button' onClick={this.sendMessage}>send</button>
         </div>
       </div>

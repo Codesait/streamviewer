@@ -1,0 +1,17 @@
+.stats-container {
+  display: flex;
+}
+
+.stats-table {
+  background-color: #e2e2e2;
+  border: 1px solid #000;
+  border-collapse: collapse;
+  color: #424242;
+  text-align: left;
+}
+
+.stats-table td,
+.stats-table th {
+  padding: .75rem;
+  border: 1px solid #fff;
+}

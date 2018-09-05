@@ -1,0 +1,20 @@
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #333;
+}
+
+.error-icon {
+  font-size: 3rem;
+  padding: 1rem;
+}
+
+.error-icon-lg {
+  font-size: 7rem;
+  padding: 1rem;
+}
+
+.error-header {
+  font-size: 3rem;
+}

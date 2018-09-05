@@ -26,12 +26,16 @@ class StreamViewerAPI {
   async searchVideoChannelUsersMessages(videoId, username) {
     let response = await axios.post('/api/streams/' + videoId +
                                     '/search?username-starts-with=' + username, {}, this.securityHeaders);
-    console.log(response);
-    return response
+    return response.data
   }
 
-  async getVideoChannelStats(videoId) {
-    let response = await axios.get('/api/streams/' + videoId + '/stats', {headers: this.securityHeaders});
+  async getVideoChannelStats(videoId, orderBy, direction) {
+    let response = await axios.get('/api/streams/' + videoId + '/stats', {
+      headers: this.securityHeaders,
+      params: {
+        'order_by': direction + orderBy,
+      }
+    });
     console.log(response);
     return response.data
   }

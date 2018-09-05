@@ -1,8 +1,10 @@
+import Loader from 'react-loader-spinner'
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import StreamPreview from './stream-preview';
 
+import './loader.css';
 import './stream-list.css';
 
 class StreamList extends Component {
@@ -35,13 +37,14 @@ class StreamList extends Component {
       if (!isInitializing) {
         return <Redirect to='/'/>;
       }
-      // TODO: render a loading component
       return null;
     }
     else {
       if (streams.length === 0 && !this.retrievingStreams) {
         this.getStreams();
+        return streamLoader();
       }
+
       return (
         <div class='stream-list-container'>
           {streams.map(stream => <div><StreamPreview data={stream}/></div>)}
@@ -49,6 +52,19 @@ class StreamList extends Component {
       );
     }
   }
+}
+
+const streamLoader = function(props) {
+  return (
+    <div class='loader'>
+      <Loader
+         type="Puff"
+         color="#ccc"
+         height="50"
+         width="50"
+      />
+    </div>
+  )
 }
 
 export default StreamList;

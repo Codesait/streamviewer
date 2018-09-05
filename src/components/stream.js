@@ -28,7 +28,6 @@ class Stream extends Component {
       // and controls shown on iframe
       return (
         <div class='stream-flex-container'>
-          <div class='stream-flex-left'></div>
           <div class='stream-flex-center'>
             <div class='video-container'>
               <div class='video-buttons-container'>

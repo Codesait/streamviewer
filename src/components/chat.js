@@ -5,8 +5,7 @@ import Auth from '../services/auth';
 import Message from './message';
 
 import './chat.css';
-
-//TODO: handle streams without live chats
+import './errors.css';
 
 class Chat extends Component {
   constructor(props) {
@@ -20,10 +19,26 @@ class Chat extends Component {
       Auth.isInitialized.then(() => {
         if (this.textArea && this.state.liveChatId) {
           let message = this.textArea.value;
+          this.textArea.value = "";
           this.sendMessageToYTandLocal(message, this.state.liveChatId, () => {});
         }
       })
     }
+  }
+
+  scrollToBottom = () => {
+    let target = this.end;
+    if (target) {
+      target.parentNode.scrollTop = target.offsetTop - target.parentNode.offsetTop
+    }
+  }
+
+  componentDidMount() {
+    this.scrollToBottom();
+  }
+
+  componentDidUpdate() {
+    this.scrollToBottom();
   }
 
   async sendMessageToYTandLocal(message, liveChatId) {
@@ -53,7 +68,6 @@ class Chat extends Component {
 
   getVideoChatMessages(videoId) {
     this.getStreamingDetails(videoId, response => {
-      console.log('or here??', response);
       const videos = response.result.items;
       if (videos.length > 0) {
         if (videos[0].liveStreamingDetails) {
@@ -63,13 +77,12 @@ class Chat extends Component {
         }
       }
     }, err => {
-      console.log(err);
+      console.error(err);
     });
   }
 
   getMessagesAndRecurse(liveChatId, pageToken) {
     this.getStreamLiveMessages(liveChatId, pageToken, (response) => {
-      console.log(response);
       const messages = response.result.items;
       // TODO: ignore any messages that we've sent
       // because we've already pushed them to messages
@@ -92,9 +105,9 @@ class Chat extends Component {
       window.setTimeout(() => {
         this.getMessagesAndRecurse(liveChatId, response.result.nextPageToken)
       }, response.result.pollingIntervalMillis);
-    }, (error) => {
-      console.log('here??');
-      this.setState({error: true});
+    }, (err) => {
+      console.error(err);
+      this.setState({error: err});
     });
   }
 
@@ -130,10 +143,10 @@ class Chat extends Component {
     if (this.state.error) {
       return (
         <div class='chat-error'>
-          <div class='error-heading'>
+          <div class='error-header'>
             {"Sorry!"}
           </div>
-          <div class='error-emoji'>
+          <div class='error-icon'>
             {"☹️"}
           </div>
           <div>
@@ -152,6 +165,7 @@ class Chat extends Component {
       <div class='chat'>
         <div class='chat-messages'>
           {messages.map(message => <div><Message message={message} authors={this.state.authors}/></div>)}
+          <div style={{ float: "left", clear: "both"}} ref={el => {this.end = el; }}></div>
         </div>
         <div class='chat-input'>
           <textarea ref={(textArea) => this.textArea = textArea} placeholder='Send chat message'></textarea>

@@ -15,7 +15,7 @@ class Message extends Component {
     return (
     <div class='message'>
       <div class='message-author-thumbnail'>
-        <img src={author.thumbnails.default.url}></img>
+        <img src={author.thumbnails.default.url} alt={'Profile picture of ' + author.title}></img>
       </div>
       <div class='message-text-fields'>
         <p class='message-author'>

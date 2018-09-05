@@ -1,8 +1,10 @@
+import json
 import svapp.api.youtube as youtube
 
 from django.core import serializers
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Count, F
+from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from oauth2_provider.decorators import protected_resource
 from oauth2_provider.models import AccessToken
@@ -70,33 +72,32 @@ def StreamSearchView(request, video_id):
         return Response(err, status=400)
 
     page = request.query_params.get('page', '1')
-    video = Video.objects.get(video_id=video_id)
+    video = get_object_or_404(Video, video_id=video_id)
     channel_id = video.channel_id
 
     messages = Message.objects.filter(live_chat__video__channel_id=channel_id)      \
                               .filter(author__username__startswith=                 \
                                       request.query_params['username-starts-with']) \
                               .order_by('created_at')
-                              
+
     paginator = Paginator(messages, 50)
     messages = paginator.get_page(int(page))
-    serialized = serializers.serialize('json', messages)
-
-    return Response(serialized, status=200)
+    results = [ob.to_json() for ob in messages]
+    return Response(results, status=200)
 
 @api_view(['GET'])
 @csrf_exempt
 @protected_resource()
 def StreamStatsView(request, video_id):
-    video = Video.objects.get(video_id=video_id)
+    video = get_object_or_404(Video, video_id=video_id)
     channel_id = video.channel_id
 
-    order = request.query_params.get('order_by', '-total')
+    order = request.query_params.get('order_by', '-message_count')
 
     message_count_per_user = \
         Message.objects.filter(live_chat__video__channel_id=channel_id)             \
                        .values('author')                                            \
-                       .annotate(total=Count('author'), name=F('author__username')) \
+                       .annotate(message_count=Count('author'), username=F('author__username')) \
                        .order_by(order)
 
     return Response(message_count_per_user, status=200)

@@ -12,7 +12,9 @@ class StreamPreview extends Component {
     return (
       <div class='stream-preview'>
         <a href={'/streams/' + this.props.data.id.videoId + '/'}>
-          <img src={this.props.data.snippet.thumbnails.medium.url}></img>
+          <img src={this.props.data.snippet.thumbnails.medium.url} alt={this.props.data.snippet.title}></img>
+          <div class='live-stream-title'>{this.props.data.snippet.title}</div>
+          <div class='live-stream-channel'>{this.props.data.snippet.channelTitle}</div>
         </a>
       </div>
     );

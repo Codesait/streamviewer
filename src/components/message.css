@@ -24,4 +24,5 @@
 
 .message-text-fields > p {
   display: inline;
+  word-break: break-all;
 }

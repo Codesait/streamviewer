@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 
 import config from '../config';
 import './App.css';
+import './loader.css';
 
 import Auth from '../services/auth';
 import Main from './main';
@@ -19,8 +20,23 @@ class App extends Component {
   }
 
   componentWillMount() {
+    const script = document.createElement('script');
+    script.onload = () => {
+      this.loadGAPIClient(script);
+    }
+    script.src = 'https://apis.google.com/js/client.js';
+    document.body.appendChild(script);
+
     Auth.observeSignInStatus(this.updateSigninStatus);
-    Auth.initialize();
+  }
+
+  loadGAPIClient(script) {
+    if (script.getAttribute('gapi_processed')) {
+      Auth.initialize();
+    }
+    else {
+      setTimeout(() => {this.loadGAPIClient(script)}, 100);
+    }
   }
 
   logout() {
@@ -42,15 +58,14 @@ class App extends Component {
                color="#ccc"
                height="50"
                width="50"
-               className="loader"
             />
           </div>
         }
         <Switch>
           <Route exact path='/' render={props => <Main isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
-          <Route path='/home/' render={props => <StreamList isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
           <Route path='/streams/:id/stats/' render={props => <StreamStats isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
           <Route path='/streams/:id/' render={props => <Stream isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
+          <Route path='/:path(home|streams)/' render={props => <StreamList isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
         </Switch>
       </div>
     );

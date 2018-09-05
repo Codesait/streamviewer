@@ -1,8 +1,13 @@
 .error-container {
-  display: flex;
-  flex-direction: column;
   align-items: center;
   color: #333;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 5rem;
+}
+
+.error-header {
+  font-size: 3rem;
 }
 
 .error-icon {
@@ -13,8 +18,4 @@
 .error-icon-lg {
   font-size: 7rem;
   padding: 1rem;
-}
-
-.error-header {
-  font-size: 3rem;
 }

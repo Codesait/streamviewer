@@ -36,7 +36,6 @@ class StreamViewerAPI {
         'order_by': direction + orderBy,
       }
     });
-    console.log(response);
     return response.data
   }
 }

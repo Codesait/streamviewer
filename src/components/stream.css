@@ -12,14 +12,13 @@
   display: flex;
   justify-content: flex-end;
   min-width: 50%;
-  padding: 2rem;
 }
 
 .stream-flex-right {
   align-items: center;
   display: flex;
-  flex: 1 1;
-  max-width: 640px;
+  width: 480px;
+  padding: 0.5rem;
 }
 
 .video-button {
@@ -38,7 +37,7 @@
 
 .video-button > * {
   display: inline-block;
-  float: left;
+  vertical-align: middle;
 }
 
 .video-buttons-container {
@@ -53,5 +52,4 @@
 .video-container {
   display: flex;
   flex-direction: column;
-  margin-top: -3.25rem;
 }

@@ -24,10 +24,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-static/*
+/static
 db.sqlite3
-env
-__pycache__/
-*/__pycache__/
+/env
+/__pycache__
+*/__pycache__
 secret.json
-/svapp/migrations/
+/svapp/migrations

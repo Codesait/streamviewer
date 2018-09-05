@@ -14,15 +14,17 @@
   text-align: center;
 }
 
+.chat-input > textarea {
+  height: 40px !important;
+  width: 100% !important;
+}
+
 .chat-messages {
   background-color: #f7f7f7;
   margin-bottom: 1em;
   overflow-y: scroll;
 }
 
-.chat-input > textarea {
-  height: 40px !important;
-  width: 100% !important;
+.clear {
+  clear: both;
 }
-
-.clear {clear: both;}

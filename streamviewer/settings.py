@@ -23,29 +23,33 @@ with open('secret.json') as f:
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# NOTE: Originally I wanted to keep all application secrets in a 'secret.json'
+# file. This was before I knew that AWS sets some environment variables for you,
+# so there's a bit of an awkward mix of the two.
 
-if ('STREAMVIEWER_ENV' in os.environ and os.environ['STREAMVIEWER_ENV'] == 'prod'):
-    SECRET = SECRET['prod']
-    ALLOWED_HOSTS = []
+env = os.environ.get('STREAMVIEWER_ENV', 'dev')
+
+if (env == 'prod'):
+    DB_NAME = os.environ['RDS_DB_NAME']
+    DB_USER_NAME = os.environ['RDS_USERNAME']
+    DB_PASSWORD = os.environ['RDS_PASSWORD']
+    DB_HOST = os.environ['RDS_HOSTNAME']
+    DB_PORT = os.environ['RDS_PORT']
+    ALLOWED_HOSTS = ['streamviewer-env.fqm36dp4kz.us-west-2.elasticbeanstalk.com']
     DEBUG = False
 else:
-    SECRET = SECRET['dev']
+    DB_NAME = SECRET[env]['DB_NAME']
+    DB_USER_NAME = SECRET[env]['DB_USER_NAME']
+    DB_PASSWORD = SECRET[env]['DB_PASSWORD']
+    DB_HOST = SECRET[env]['DB_HOST']
+    DB_PORT = SECRET[env]['DB_PORT']
     ALLOWED_HOSTS = []
     DEBUG = True
 
 # API keys
 
-SECRET_KEY = SECRET['STREAMVIEWER_SECRET_KEY']
-GOOGLE_API_KEY = SECRET['GOOGLE_API_KEY']
-
-# Database config
-
-DB_NAME = SECRET['DB_NAME']
-DB_USER_NAME = SECRET['DB_USER_NAME']
-DB_PASSWORD = SECRET['DB_PASSWORD']
-DB_HOST = SECRET['DB_HOST']
-DB_PORT = SECRET['DB_PORT']
+SECRET_KEY = SECRET['shared']['STREAMVIEWER_SECRET_KEY']
+GOOGLE_API_KEY = SECRET['shared']['GOOGLE_API_KEY']
 
 # Application definition
 
@@ -68,8 +72,8 @@ INSTALLED_APPS = [
 
 SOCIAL_AUTH_RAISE_EXCEPTIONS = True
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = SECRET['GOOGLE_CLIENT_ID']
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = SECRET['GOOGLE_SECRET']
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = SECRET['shared']['GOOGLE_CLIENT_ID']
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = SECRET['shared']['GOOGLE_SECRET']
 CSRF_COOKIE_SECURE = False
 CORS_ORIGIN_ALLOW_ALL = True
 ROOT_URLCONF = 'streamviewer.urls'

@@ -49,24 +49,26 @@ class App extends Component {
 
   render() {
     return (
-      <div className='App'>
+      <div>
         <LogoutButton onClick={this.logout} />
-        {this.state.isInitializing  &&
-          <div class='loader'>
-            <Loader
-               type="Puff"
-               color="#ccc"
-               height="50"
-               width="50"
-            />
-          </div>
-        }
-        <Switch>
-          <Route exact path='/' render={props => <Main isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
-          <Route path='/streams/:id/stats/' render={props => <StreamStats isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
-          <Route path='/streams/:id/' render={props => <Stream isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
-          <Route path='/:path(home|streams)/' render={props => <StreamList isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
-        </Switch>
+        <div className='App'>
+          {this.state.isInitializing  &&
+            <div class='loader'>
+              <Loader
+                 type='Puff'
+                 color='#ccc'
+                 height='50'
+                 width='50'
+              />
+            </div>
+          }
+          <Switch>
+            <Route exact path='/' render={props => <Main isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
+            <Route path='/streams/:id/stats/' render={props => <StreamStats isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
+            <Route path='/streams/:id/' render={props => <Stream isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
+            <Route path='/:path(home|streams)/' render={props => <StreamList isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
+          </Switch>
+        </div>
       </div>
     );
   }
@@ -74,9 +76,12 @@ class App extends Component {
 
 const LogoutButton = function(props) {
   return (
-    <button onClick={props.onClick}>
-      Logout
-    </button>
+    <div class='nav-area'>
+      <div class='logout-button video-button' onClick={props.onClick}>
+        <i class='material-icons'>power_settings_new</i>
+        <div class='video-buttons-text'>Logout</div>
+      </div>
+    </div>
   );
 }
 

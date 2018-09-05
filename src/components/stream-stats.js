@@ -1,3 +1,4 @@
+import moment from 'moment'
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 
@@ -7,6 +8,11 @@ import StreamViewerAPI from '../services/api';
 import './errors.css';
 import './stream-stats.css';
 
+const mapColumnToKey = {
+  '# messages sent':'message_count',
+  'Username':'username'
+}
+
 class StreamStats extends Component {
 
   constructor(props) {
@@ -15,6 +21,7 @@ class StreamStats extends Component {
     this.getStats = this.getStats.bind(this);
     this.handleTextInputChange = this.handleTextInputChange.bind(this);
     this.searchMessagesByUser = this.searchMessagesByUser.bind(this);
+    this.clickColumn = this.clickColumn.bind(this);
 
     this.state = {
       'stats': [],
@@ -37,19 +44,27 @@ class StreamStats extends Component {
     }
   }
 
-  renderFoundMessage(message) {
-    return (
-      <div>
-        <div>{message.author_name}</div>
-        <div>{message.created_at}</div>
-        <div>{message.text}</div>
-      </div>
-    )
-  }
-
   handleTextInputChange(event) {
     this.setState({value: event.target.value});
     this.searchMessagesByUser();
+  }
+
+  clickColumn(column) {
+    let direction = this.state.direction;
+    let orderBy = this.state.orderBy;
+
+    if (column == orderBy) {
+      direction = (direction === '-') ? '' : '-';
+    }
+    else {
+      orderBy = column;
+    }
+    this.setState({
+      'direction': direction,
+      'orderBy': orderBy,
+    }, () => {
+      this.getStats(this.props.match.params.id);
+    });
   }
 
   searchMessagesByUser() {
@@ -95,15 +110,26 @@ class StreamStats extends Component {
 
     return (
       <div class='stats-container'>
-        <StatsTable state={this.state}/>
-        <div class='search-by-user'>
-          <input type='text' value={this.state.value} placeholder='Filter messages by username' onChange={this.handleTextInputChange}></input>
-          <div>
-            {messages.map(message => {
-                return this.renderFoundMessage(message)
-            })}
-          </div>
-        </div>
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                <StatsButtons videoId={videoId}/>
+              </td>
+              <td>
+                <input class='search-input' type='text' value={this.state.value} placeholder='Find messages by username' onChange={this.handleTextInputChange} />
+              </td>
+            </tr>
+            <tr>
+              <td class='stats-table-container'>
+                <StatsTable state={this.state} clickColumn={this.clickColumn}/>
+              </td>
+              <td class='stat-message-container'>
+                <StatsMessages messages={messages}/>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     )
   }
@@ -118,14 +144,46 @@ const renderStatsError = function(props) {
   )
 }
 
-const StatsTable = function(props) {
-  const stats = props.state.stats;
-  const orderBy = props.state.orderBy;
-  const direction = props.state.direction;
-  const columns = props.state.columns;
+const StatsButtons = function(props) {
+  const videoId = props.videoId;
+  return (
+    <div class='video-buttons-container'>
+      <a href={'/home'} class='video-button'>
+        <i class="material-icons">home</i>
+        <div class='video-buttons-text'>home</div>
+      </a>
+      <a href={'/streams/' + videoId} class='video-button'>
+        <i class="material-icons">play_circle_outline</i>
+        <div class='video-buttons-text'>video</div>
+      </a>
+    </div>
+  )
+}
 
-  const tableHeader = StatsTableHeader(orderBy, direction, columns);
-  const tableRows = StatsTableRows(stats);
+const StatsMessages = function(props) {
+  let messages = props.messages.map(message => {
+    const created_at = moment(message.created_at);
+    // TODO: create special relative date formatting,
+    // i.e include year if time delta > 365 days
+    // print "yesterday, time" if posted yesterday
+    // and other similar things
+    return (
+      <div class='stat-message'>
+        <div class='stat-message-details'>
+          <div>{message.author_name}</div>
+          <div>{created_at.format('MMM D, h:mm a')}</div>
+        </div>
+        <div>{message.text}</div>
+      </div>
+    )
+  });
+
+  return (<div class='stat-messages'>{messages}</div>)
+}
+
+const StatsTable = function(props) {
+  const tableHeader = StatsTableHeader(props);
+  const tableRows = StatsTableRows(props);
 
   return (
     <table class='stats-table'>
@@ -139,16 +197,14 @@ const StatsTable = function(props) {
   )
 }
 
-const mapColumnToKey = {
-  '# messages sent':'message_count',
-  'Username':'username'
-}
-
-const StatsTableHeader = function(orderBy, direction, columns) {
+const StatsTableHeader = function(props) {
+  const orderBy = props.state.orderBy;
+  const direction = props.state.direction;
+  const columns = props.state.columns;
+  const clickColumn = props.clickColumn;
   let arrow;
-  let tableColum;
 
-  if (direction === '+') {
+  if (direction === '') {
     arrow = (<i class="material-icons">keyboard_arrow_up</i>)
   }
   else {
@@ -164,7 +220,7 @@ const StatsTableHeader = function(orderBy, direction, columns) {
       inner.push(<div>{arrow}</div>)
     }
 
-    return <td>{inner}</td>
+    return <td onClick={() => clickColumn(mapColumnToKey[column])}>{inner}</td>
   });
 
   return (
@@ -174,7 +230,9 @@ const StatsTableHeader = function(orderBy, direction, columns) {
   )
 }
 
-const StatsTableRows = function(stats) {
+const StatsTableRows = function(props) {
+  const stats = props.state.stats;
+
   let rows = stats.map((stat) => {
     return (
       <tr>

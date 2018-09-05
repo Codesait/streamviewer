@@ -23,8 +23,9 @@
   line-height: 1.2rem;
   padding-top: 0.5rem;
   -webkit-line-clamp: 2;
-  /* autoprefixer: ignore next */
+  /* autoprefixer: off */
   -webkit-box-orient: vertical;
+  /* autoprefixer: on */
 }
 
 .live-stream-channel {

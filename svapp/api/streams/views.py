@@ -78,7 +78,7 @@ def StreamSearchView(request, video_id):
     messages = Message.objects.filter(live_chat__video__channel_id=channel_id)      \
                               .filter(author__username__startswith=                 \
                                       request.query_params['username-starts-with']) \
-                              .order_by('created_at')
+                              .order_by('-created_at')
 
     paginator = Paginator(messages, 50)
     messages = paginator.get_page(int(page))

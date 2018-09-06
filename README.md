@@ -52,6 +52,8 @@ for https://gist.github.com/osamakhn/aeed06830fbafa2ff9fd31a8326fec0d
     Later on I ended up regretting not just doing the request to find a valid
     embeddable stream for the channel and using channel_id for the route, because it means we can't do nice things like have chat users name link directly to their streaming channel (if they have one), and always have a consistent URI for frequently visited channels.
 
+  - Stats sorting isn't done locally, it does a server request each time on re-ordering. This is built on the assumption that at some point there will be enough users to require pagination, which will require a server request to get the correct rankings. If all records are retrievable, however, it would be better to do the sorting locally on the client.
+
   - The username search uses "contains" (i.e strings can match any subset of the username) for examining usernames, which can get really expensive depending on the size of the dataset, but is nice for searching when you have a guarantee that your dataset size is small. In production I would likely swap this out for a prefix query on username, which can at least take advantage of some indexing.
 
 ## Bonus points:

@@ -3,5 +3,5 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 4rem 8rem;
+  padding: 4rem 4rem 2rem;
 }

@@ -11,20 +11,64 @@ class StreamList extends Component {
   constructor(props) {
     super(props);
     this.getStreams = this.getStreams.bind(this);
+    this.streamsRef = React.createRef();
+    this.nextPageToken = null;
+    this.noMoreStreams = false;
     this.state = {streams: []};
   }
 
+  isBottom(el) {
+    return el.getBoundingClientRect().bottom - 10 <= window.innerHeight ;
+  }
+
+  componentDidMount() {
+    document.addEventListener('scroll', this.trackScrolling);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('scroll', this.trackScrolling);
+  }
+
+  // https://stackoverflow.com/questions/45585542/detecting-when-user-scrolls-to-bottom-of-div-with-react-js
+  // by user: ewwink
+  trackScrolling = () => {
+    if (this.isBottom(this.streamsRef.current)) {
+      // store retrievingStreams in regular member because we need it to lock immediately
+      // store noMoreStreams in a state variable so we can use it to render a notification
+      // of no more streams to load
+      if (!this.retrievingStreams && !this.state.noMoreStreams) {
+        this.getStreams();
+      }
+    }
+  };
+
   async getStreams() {
-    this.retrievingStreams = true;
-    let response = await window.gapi.client.youtube.search.list({
+    const params = {
       'part': 'snippet',
       'eventType': 'live',
       'videoEmbeddable': true,
       'maxResults': 25,
       'type': 'video',
+      'regionCode': 'CA',
+      'relevanceLanguage': 'EN',
+    }
+    this.retrievingStreams = true;
+
+    if (this.nextPageToken) {
+      params.pageToken = this.nextPageToken;
+    }
+
+    let response = await window.gapi.client.youtube.search.list(params);
+
+    this.nextPageToken = response.result.nextPageToken;
+
+    this.setState(prevState => ({
+      streams: [...prevState.streams, ...response.result.items],
+      noMoreStreams: response.result.items.length == 0,
+    }), () => {
+      this.retrievingStreams = false;
     });
-    this.retrievingStreams = false;
-    this.setState({'streams': response.result.items});
+
     return response
   }
 
@@ -46,7 +90,7 @@ class StreamList extends Component {
       }
 
       return (
-        <div class='stream-list-container'>
+        <div ref={this.streamsRef} class='stream-list-container'>
           {streams.map(stream => <div><StreamPreview data={stream}/></div>)}
         </div>
       );

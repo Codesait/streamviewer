@@ -11,7 +11,8 @@ for https://gist.github.com/osamakhn/aeed06830fbafa2ff9fd31a8326fec0d
     Django:
       - RESTful API provided by django-rest-framework
       - Server-side OAuth2 provided by django-rest-framework-social-oauth2
-    Postgresql Database
+
+    PostgreSQL Database
 
   Hosted on AWS, using Elastic Beanstalk and Amazon RDS.
 
@@ -19,21 +20,24 @@ for https://gist.github.com/osamakhn/aeed06830fbafa2ff9fd31a8326fec0d
 
   Since Node.js wasn't a possibility I figured I should fall back on something I was at least somewhat familiar with for the back-end, but I definitely haven't worked in Django for some time and using it to deliver a SPA hooked up to RESTful API with social auth was like trying to hammer in a nail with a screwdriver. I'd probably try Rails next time and learn Ruby.
 
-  I chose a relational database because it seemed to fit the use case of high-write and low-read data transfer, with eventual joins needed for the required statistics.
+  I chose a relational database because it seemed to fit the use case of high-write and low-read data transfer with eventual joins needed for calculating the required statistics.
 
 ## Assumptions made:
   - Each stream was meant to have its own stats page instead of a single aggregate one.
-  - The only messages saved are ones sent by users of our application, and not all messages that appear in chat.
+  - The only messages saved are ones sent by users of our application, and not all the messages that appear in chat. (Really hoping I didn't misunderstand this and that I was actually supposed to be creating a worker to monitor YouTube live chats and store messages)
 
 ## Things left to do:
-  - Get an SSL certificate, all server-side communication is currently done over HTTP.
+  - Get an SSL certificate, all client to server communication is currently done over HTTP.
+  - Test everything. I cut writing tests to save time and feel awful about it.
+  - Query current user channel id on login so that messages received from the current user in chat can be ignored, and then current user messages can be appended immediately locally.
   - Add a dropdown for specifying what category to load streams from
-  - Add a mechanism for loading more streams from that category (probably load when scrolled to bottom)
-  - Add a nice logout button (I made one, but have it hidden for the demo)
+  - Add a visible indicator that there are no more streams to retrieve
+  - Add a nice logout button (I made one, but have it disabled in the demo)
   - Add a method for loading more messages in the username search, results are currently paginated with a limit of 50 per page.
   - Properly handle navigating to streams with invalid video_ids (currently just displays an empty YouTube embed and chat)
   - Style historical messages
   - Check overflow on longer historical messages
+  - Create app logo and favicon
   - Refactor
 
 ## Some design decisions:

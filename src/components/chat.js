@@ -86,6 +86,7 @@ class Chat extends Component {
       const messages = response.result.items;
       // TODO: ignore any messages that we've sent
       // because we've already pushed them to messages
+      //
       for (let i = 0; i < messages.length; i++) {
         let message = messages[i];
         const authorId = message.snippet.authorChannelId;
@@ -169,7 +170,9 @@ class Chat extends Component {
         </div>
         <div class='chat-input'>
           <textarea ref={(textArea) => this.textArea = textArea} placeholder='Send chat message'></textarea>
-          <button type='button' onClick={this.sendMessage}>send</button>
+          <div class='chat-send-button' onClick={this.sendMessage}>
+            <i class='material-icons'>send</i>
+          </div>
         </div>
       </div>
     );

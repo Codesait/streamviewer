@@ -1,8 +1,14 @@
+@media only screen and (max-width: 1000px) {
+  .chat {
+    max-height: 240px;
+  }
+}
+
 .chat {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  max-height: 385px;
+  height: 385px;
   min-height: 0;
 }
 
@@ -13,23 +19,41 @@
   text-align: center;
 }
 
+.chat-input {
+  display: flex;
+  height: 3rem;
+}
+
 .chat-input > textarea {
-  height: 40px !important;
-  width: 100% !important;
+  flex: 1;
 }
 
 .chat-messages {
   background-color: #f7f7f7;
+  flex: 1;
   margin-bottom: 1em;
   overflow-y: scroll;
 }
 
-.clear {
-  clear: both;
+.chat-send-button {
+  background-color: #f7f7f7;
+  height: inherit;
+  vertical-align: middle;
+  width: 3rem;
+  line-height: 4rem;
+  text-align: center;
 }
 
-@media only screen and (max-width: 1000px) {
-  .chat {
-    max-height: 240px;
-  }
+.chat-send-button > i {
+  color: #2196F3;
+}
+
+.chat-send-button:hover {
+  cursor: pointer;
+  background-color: #e1f2ff;
+  box-shadow: 0 0 1px 2px #d0eaf7;
+}
+
+.clear {
+  clear: both;
 }

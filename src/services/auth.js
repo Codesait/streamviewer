@@ -105,7 +105,6 @@ class Auth {
         'client_id': this.clientId,
         'token': token.access_token,
       });
-      console.log(response);
     } catch(err) {
       console.error('Error revoking OAuth2 token.', err);
     }

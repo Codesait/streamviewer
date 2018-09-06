@@ -3,8 +3,8 @@
   display: flex;
   flex-wrap: wrap;
   height: inherit;
-  margin: auto 0;
   justify-content: center;
+  margin-top: -3rem;
   width: inherit;
 }
 
@@ -17,8 +17,9 @@
 .stream-flex-right {
   align-items: center;
   display: flex;
-  width: 480px;
+  margin-bottom: -2.6rem;
   padding: 0.5rem;
+  width: 480px;
 }
 
 .video-button {
@@ -42,7 +43,6 @@
 .video-buttons-container {
   display: flex;
   justify-content: space-between;
-  padding-top: 1rem;
 }
 
 .video-buttons-text {
@@ -52,4 +52,10 @@
 .video-container {
   display: flex;
   flex-direction: column;
+}
+
+@media only screen and (max-width: 1000px) {
+  .stream-flex-container {
+    margin-top: 0;
+  }
 }

@@ -1,50 +1,56 @@
-##Application stack:
-  Front-end:
+# Stream Viewer
+for https://gist.github.com/osamakhn/aeed06830fbafa2ff9fd31a8326fec0d
+
+## Application stack:
+  ### Front-end:
     React:
+
       - uses react-router for SPA routing
+
     Google APIs Client Library for Client-side OAuth2
 
-  Back-end:
+  ### Back-end:
     Django:
       - RESTful API provided by django-rest-framework
       - Server-side OAuth2 provided by django-rest-framework-social-oauth2
+
     Postgresql Database
 
   Hosted on AWS, using Elastic Beanstalk and Amazon RDS.
 
   Justification: I'd never used React and thought this could be a good opportunity to learn to use it for building the SPA. Similar reasoning for hosting on AWS, which was actually a pretty painless experience thankfully.
 
-  Since Node.js wasn't a possibility I figure I should fall back on something I was at least somewhat familiar with for the back-end, but I definitely haven't worked in Django for some time and using it to deliver a SPA hooked up to RESTful API with social auth was like trying to hammer in a nail with a screwdriver. I'd probably try Rails next time and learn Ruby.
+  Since Node.js wasn't a possibility I figured I should fall back on something I was at least somewhat familiar with for the back-end, but I definitely haven't worked in Django for some time and using it to deliver a SPA hooked up to RESTful API with social auth was like trying to hammer in a nail with a screwdriver. I'd probably try Rails next time and learn Ruby.
 
   I chose a relational database because it seemed to fit the use case of high-write and low-read data transfer, with eventual joins needed for the required statistics.
 
-##Assumptions made:
+## Assumptions made:
   - Each stream was meant to have its own stats page instead of a single aggregate one.
   - The only messages saved are ones sent by users of our application, and not all messages that appear in chat.
 
-##Things left to do:
-  - Get an SSL certificate, all communication is currently done over HTTP because I didn't want to spend the money on a certificate.
+## Things left to do:
+  - Get an SSL certificate, all server-side communication is currently done over HTTP.
   - Add a dropdown for specifying what category to load streams from
   - Add a mechanism for loading more streams from that category (probably load when scrolled to bottom)
   - Add a nice logout button (I made one, but have it hidden for the demo)
   - Add a method for loading more messages in the username search, results are currently paginated with a limit of 50 per page.
-  - Properly handle navigating to streams with invalid videoIds (currently just displays an empty YouTube embed and chat)
+  - Properly handle navigating to streams with invalid video_ids (currently just displays an empty YouTube embed and chat)
   - Style historical messages
   - Check overflow on longer historical messages
   - Refactor
 
-##Some design decisions:
-  - The server communicates with Google/YouTube API as infrequently as possible, since our client is already authenticated they can make most of the requests to YouTube's API themselves, saving us an RTT. We only communicate with YouTube when the user posts a message to validate that the videoId we receive has a liveChat that can be posted to.
+## Some design decisions:
+  - The server communicates with Google/YouTube API as infrequently as possible, since our client is already authenticated they can make most of the requests to YouTube's API themselves, saving us an RTT. We only communicate with YouTube when the user posts a message to validate that the video_id we receive has a live chat that can be posted to.
 
-  - Stream routes are defined using the YouTube videoId (i.e .../streams/:video_id/) instead of the channelId.
+  - Stream routes are defined using the YouTube video_id (i.e .../streams/:video_id/) instead of the channelId.
     This is because there is a possibility of multiple live streams per channel, with certain live streams having embedding disabled.
     Using the :video_id as a route parameter allows for a YouTube Live Stream to be embedded immediately on page load without an additional request to determine whether
     the default live stream embed (using https://www.youtube.com/embed/live_stream?channel=CHANNEL_ID) is valid.
 
-    As a result, on the server-side we incur some additional work having to make a request to determine the channel of the video, but we only have to do that the first time we see the videoId.
+    As a result, on the server-side we incur some additional work having to make a request to determine the channel of the video, but we only have to do that the first time we see the video_id.
 
     Later on I ended up regretting not just doing the request to find a valid
-    embeddable stream for the channel and using channelId for the route, because it means we can't do nice things like have chat users name link directly to their streaming channel (if they have one), and always have a consistent URI for frequently visited channels.
+    embeddable stream for the channel and using channel_id for the route, because it means we can't do nice things like have chat users name link directly to their streaming channel (if they have one), and always have a consistent URI for frequently visited channels.
 
   - The username search uses "contains" (i.e strings can match any subset of the username) for examining usernames, which can get really expensive depending on the size of the dataset, but is nice for searching when you have a guarantee that your dataset size is small. In production I would likely swap this out for a prefix query on username, which can at least take advantage of some indexing.
 

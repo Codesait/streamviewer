@@ -4,14 +4,13 @@ for https://gist.github.com/osamakhn/aeed06830fbafa2ff9fd31a8326fec0d
 ## Application stack:
   ### Front-end:
     React:
-      - uses react-router for SPA routing
+      - react-router for SPA routing
     Google APIs Client Library for Client-side OAuth2
 
   ### Back-end:
     Django:
       - RESTful API provided by django-rest-framework
       - Server-side OAuth2 provided by django-rest-framework-social-oauth2
-
     PostgreSQL Database
 
   Hosted on AWS, using Elastic Beanstalk and Amazon RDS.

@@ -10,23 +10,46 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
+import json
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SECRET = {}
 
+with open('secret.json') as f:
+    SECRET = json.load(f)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['STREAMVIEWER_SECRET_KEY']
+# NOTE: Originally I wanted to keep all application secrets in a 'secret.json'
+# file. This was before I knew that AWS sets some environment variables for you,
+# so there's a bit of an awkward mix of the two.
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+env = os.environ.get('STREAMVIEWER_ENV', 'dev')
 
-ALLOWED_HOSTS = ['streamviewer-env.fqm36dp4kz.us-west-2.elasticbeanstalk.com']
+if (env == 'prod'):
+    DB_NAME = os.environ['RDS_DB_NAME']
+    DB_USER_NAME = os.environ['RDS_USERNAME']
+    DB_PASSWORD = os.environ['RDS_PASSWORD']
+    DB_HOST = os.environ['RDS_HOSTNAME']
+    DB_PORT = os.environ['RDS_PORT']
+    ALLOWED_HOSTS = ['streamviewer-env.fqm36dp4kz.us-west-2.elasticbeanstalk.com']
+    DEBUG = False
+else:
+    DB_NAME = SECRET[env]['DB_NAME']
+    DB_USER_NAME = SECRET[env]['DB_USER_NAME']
+    DB_PASSWORD = SECRET[env]['DB_PASSWORD']
+    DB_HOST = SECRET[env]['DB_HOST']
+    DB_PORT = SECRET[env]['DB_PORT']
+    ALLOWED_HOSTS = []
+    DEBUG = True
 
+# API keys
+
+SECRET_KEY = SECRET['shared']['STREAMVIEWER_SECRET_KEY']
+GOOGLE_API_KEY = SECRET['shared']['GOOGLE_API_KEY']
 
 # Application definition
 
@@ -37,11 +60,28 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'svapp',
+    'corsheaders',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'social_django',
+    'rest_social_auth',
+    'oauth2_provider',
+    'rest_framework_social_oauth2',
 ]
+
+SOCIAL_AUTH_RAISE_EXCEPTIONS = True
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = SECRET['shared']['GOOGLE_CLIENT_ID']
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = SECRET['shared']['GOOGLE_SECRET']
+CSRF_COOKIE_SECURE = False
+CORS_ORIGIN_ALLOW_ALL = True
+ROOT_URLCONF = 'streamviewer.urls'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -49,12 +89,29 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'streamviewer.urls'
+MIDDLEWARE_CLASSES = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'corsheaders.middleware.CorsPostCsrfMiddleware',
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
+        'rest_framework_social_oauth2.authentication.SocialAuthentication',
+    ),
+}
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'rest_framework_social_oauth2.backends.DjangoOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -62,6 +119,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -69,17 +128,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'streamviewer.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': DB_NAME,
+        'USER': DB_USER_NAME,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': DB_HOST,
+        'PORT': DB_PORT,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -99,23 +160,20 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'US/Mountain'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'build/static'),
+]

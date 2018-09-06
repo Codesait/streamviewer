@@ -1,0 +1,35 @@
+body {
+  font-size: 12px;
+  height: inherit;
+  width: inherit;
+}
+
+html {
+  height: 100%;
+  width: 100%;
+}
+
+#root {
+  height: inherit;
+  width: inherit;
+}
+
+#root > div {
+  height: inherit;
+  width: inherit;
+}
+
+.App {
+  align-items: center;
+  display: flex;
+  height: inherit;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: inherit;
+}
+
+.nav-area {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}

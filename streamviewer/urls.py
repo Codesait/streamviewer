@@ -14,8 +14,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path, include
+from django.views.generic import TemplateView
+from svapp.api.streams.views import StreamMessageView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('auth/', include('rest_framework_social_oauth2.urls')),
+    path('api/', include('svapp.api.urls')),
+    re_path('.*', TemplateView.as_view(template_name='index.html')),
 ]

@@ -1,0 +1,35 @@
+.stream-preview {
+  padding: 0.75rem;
+  width: 320px;
+}
+
+.stream-preview > a {
+  color: #4c4c4c;
+  text-decoration: none;
+}
+
+.live-stream-channel,
+.live-stream-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+
+.live-stream-title {
+  display: -webkit-box;
+  font-size: 1rem;
+  font-weight: 500;
+  height: 2.4rem;
+  line-height: 1.2rem;
+  padding-top: 0.5rem;
+  -webkit-line-clamp: 2;
+  /* autoprefixer: off */
+  -webkit-box-orient: vertical;
+  /* autoprefixer: on */
+}
+
+.live-stream-channel {
+  color: #aaa;
+  height: 1.2rem;
+  line-height: 1.4rem;
+}

@@ -40,6 +40,15 @@ class Auth {
   load() {
     window.gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSigninStatus);
     let isSignedIn = window.gapi.auth2.getAuthInstance().isSignedIn.get();
+    window.gapi.signin2.render('my-signin2', {
+      'scope': config.SCOPES,
+      'width': 240,
+      'height': 50,
+      'longtitle': true,
+      'theme': 'dark',
+      'onsuccess': console.log,
+      'onfailure': console.error
+    });
     this.updateSigninStatus(isSignedIn);
   }
 
@@ -50,9 +59,18 @@ class Auth {
   async updateSigninStatus(isSignedIn) {
     this.isSignedIn = isSignedIn;
 
+    if (!this.isSignedIn) {
+      document.getElementById('my-signin2').style.display = 'block';
+    }
+
+    else {
+      document.getElementById('my-signin2').style.display = 'none';
+    }
+
     if (isSignedIn && this.apiToken == null) {
       await this.exchangeToken();
       this.isInitialized.resolve();
+
     }
 
     this.notifyObservers();

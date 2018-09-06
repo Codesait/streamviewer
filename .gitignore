@@ -27,7 +27,7 @@ yarn-error.log*
 /static
 db.sqlite3
 /env
-/__pycache__
-*/__pycache__
+__pycache__
 secret.json
+package-lock.json
 /svapp/migrations

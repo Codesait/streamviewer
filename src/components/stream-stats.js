@@ -105,7 +105,7 @@ class StreamStats extends Component {
     }
 
     if (this.state.error) {
-      return renderStatsError();
+      return renderStatsError(videoId);
     }
 
     return (
@@ -135,11 +135,15 @@ class StreamStats extends Component {
   }
 }
 
-const renderStatsError = function(props) {
+const renderStatsError = function(videoId) {
   return (
     <div class='error-container'>
-      <i class="error-icon-lg material-icons">help_outline</i>
-      <div>{"We don't have any stats for this channel yet."}</div>
+      <i class='error-icon-lg material-icons'>help_outline</i>
+      <div>{'We don\'t have any stats for this channel yet.'}</div>
+      <a href={'/streams/' + videoId} class='back-button video-button'>
+        <i class='material-icons'>arrow_back</i>
+        <div>back</div>
+      </a>
     </div>
   )
 }
@@ -149,11 +153,11 @@ const StatsButtons = function(props) {
   return (
     <div class='video-buttons-container'>
       <a href={'/home'} class='video-button'>
-        <i class="material-icons">home</i>
+        <i class='material-icons'>home</i>
         <div class='video-buttons-text'>home</div>
       </a>
       <a href={'/streams/' + videoId} class='video-button'>
-        <i class="material-icons">play_circle_outline</i>
+        <i class='material-icons'>play_circle_outline</i>
         <div class='video-buttons-text'>video</div>
       </a>
     </div>
@@ -164,8 +168,8 @@ const StatsMessages = function(props) {
   let messages = props.messages.map(message => {
     const created_at = moment(message.created_at);
     // TODO: create special relative date formatting,
-    // i.e include year if time delta > 365 days
-    // print "yesterday, time" if posted yesterday
+    // i.e don't include year if time delta < 365 days
+    // print 'yesterday, hh:mm' if posted yesterday
     // and other similar things
     return (
       <div class='stat-message'>
@@ -205,10 +209,10 @@ const StatsTableHeader = function(props) {
   let arrow;
 
   if (direction === '') {
-    arrow = (<i class="material-icons">keyboard_arrow_up</i>)
+    arrow = (<i class='material-icons'>keyboard_arrow_up</i>)
   }
   else {
-    arrow = (<i class="material-icons">keyboard_arrow_down</i>)
+    arrow = (<i class='material-icons'>keyboard_arrow_down</i>)
   }
 
   const tableColumns = columns.map(column => {

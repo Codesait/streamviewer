@@ -3,16 +3,9 @@ import {
   Redirect
 } from 'react-router-dom';
 
-class Main extends Component {
-  constructor(props) {
-    super(props);
-    
-    this.handleAuthClick = this.handleAuthClick.bind(this);
-  }
+import config from '../config';
 
-  handleAuthClick(event) {
-    window.gapi.auth2.getAuthInstance().signIn().then(this.handleProfileSuccess, this.handleProfileError);
-  }
+class Main extends Component {
 
   handleProfileError(error) {
     console.error(error);
@@ -24,23 +17,14 @@ class Main extends Component {
 
   render() {
     const isSignedIn = this.props.isSignedIn;
+    const isInitializing = this.props.isInitializing;
 
     if (isSignedIn) {
       return <Redirect to='/home' />
     }
-
-    return (
-      <LoginButton onClick={this.handleAuthClick} />
-    )
+    
+    return null;
   }
-}
-
-const LoginButton = function(props) {
-  return (
-    <button onClick={props.onClick}>
-      Login
-    </button>
-  );
 }
 
 export default Main;

@@ -24,7 +24,7 @@ class App extends Component {
     script.onload = () => {
       this.loadGAPIClient(script);
     }
-    script.src = 'https://apis.google.com/js/client.js';
+    script.src = 'https://apis.google.com/js/platform.js';
     document.body.appendChild(script);
 
     Auth.observeSignInStatus(this.updateSigninStatus);
@@ -48,9 +48,10 @@ class App extends Component {
   }
 
   render() {
+    let showSignIn = !this.state.isSignedIn && !this.state.isInitializing;
+
     return (
       <div>
-        <LogoutButton onClick={this.logout} />
         <div className='App'>
           {this.state.isInitializing  &&
             <div class='loader'>
@@ -62,6 +63,7 @@ class App extends Component {
               />
             </div>
           }
+          <div id='my-signin2'></div>
           <Switch>
             <Route exact path='/' render={props => <Main isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>
             <Route path='/streams/:id/stats/' render={props => <StreamStats isSignedIn={this.state.isSignedIn} isInitializing={this.state.isInitializing} {...props}/>}/>

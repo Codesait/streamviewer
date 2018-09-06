@@ -59,4 +59,4 @@ for https://gist.github.com/osamakhn/aeed06830fbafa2ff9fd31a8326fec0d
 ## Bonus points:
   1. I half-attempted to make it responsive, the stats page definitely isn't (it uses some rigid table elements) but the home and stream view are somewhat there.
   2. Didn't implement the windowed statistics, I did add a created_at date to the messages column in my schema so this could be accomplished by modifying queries to use that parameter.
-  3. Didn't implement, could be accomplished by stats queries at regular intervals OR could re-calculate statistics client-side.
+  3. Didn't implement, could be accomplished by stats queries at regular intervals OR could re-calculate statistics client-side on message events.

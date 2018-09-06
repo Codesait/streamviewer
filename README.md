@@ -57,6 +57,6 @@ for https://gist.github.com/osamakhn/aeed06830fbafa2ff9fd31a8326fec0d
   - The username search uses "contains" (i.e strings can match any subset of the username) for examining usernames, which can get really expensive depending on the size of the dataset, but is nice for searching when you have a guarantee that your dataset size is small. In production I would likely swap this out for a prefix query on username, which can at least take advantage of some indexing.
 
 ## Bonus points:
-  - I half-attempted to make it responsive, the stats page definitely isn't (it uses some rigid table elements) but the home and stream view are somewhat there.
-  - Didn't implement the windowed statistics, I did add a created_at date to the messages column in my schema so this could be accomplished by modifying queries to use that parameter.
-  - Didn't implement, could be accomplished by stats queries at regular intervals OR could re-calculate statistics client-side.
+  1. I half-attempted to make it responsive, the stats page definitely isn't (it uses some rigid table elements) but the home and stream view are somewhat there.
+  2. Didn't implement the windowed statistics, I did add a created_at date to the messages column in my schema so this could be accomplished by modifying queries to use that parameter.
+  3. Didn't implement, could be accomplished by stats queries at regular intervals OR could re-calculate statistics client-side.

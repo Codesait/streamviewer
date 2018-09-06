@@ -2,12 +2,12 @@
 for https://gist.github.com/osamakhn/aeed06830fbafa2ff9fd31a8326fec0d
 
 ## Application stack:
-  ### Front-end (located in the /src/ folder):
+  ### Front-end (located in the /src folder):
     React:
       - react-router for SPA routing
     Google APIs Client Library for Client-side OAuth2
 
-  ### Back-end (svapp and streamviewer folders):
+  ### Back-end (/svapp and /streamviewer folders):
     Django:
       - RESTful API provided by django-rest-framework
       - Server-side OAuth2 provided by django-rest-framework-social-oauth2

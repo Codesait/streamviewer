@@ -3,6 +3,7 @@
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+.ebextensions
 
 # dependencies
 /node_modules

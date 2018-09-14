@@ -26,6 +26,7 @@
 
 .chat-input > textarea {
   flex: 1;
+  height: 42px !important;
 }
 
 .chat-messages {
@@ -51,7 +52,8 @@
 .chat-send-button:hover {
   cursor: pointer;
   background-color: #e1f2ff;
-  box-shadow: 0 0 1px 2px #d0eaf7;
+  box-shadow: inset 0px 0px 0px 1px #85b3ff,
+                    0px 0px 0px 0.5px #85b3ff;
 }
 
 .clear {

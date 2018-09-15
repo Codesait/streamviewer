@@ -2,8 +2,8 @@ import moment from 'moment'
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import Auth from '../services/api';
 import StreamViewerAPI from '../services/api';
+import Auth from '../services/auth';
 
 import './errors.css';
 import './stream-stats.css';
@@ -29,8 +29,14 @@ class StreamStats extends Component {
       'columns': ['Username', '# messages sent'],
       'orderBy': 'message_count',
       'direction': '-',
-      'error': false
+      'error': false,
+      'value': ''
     }
+  }
+
+  async componentDidMount() {
+   await Auth.isInitialized;
+   this.searchMessagesByUser();
   }
 
   async getStats(videoId) {
@@ -45,8 +51,7 @@ class StreamStats extends Component {
   }
 
   handleTextInputChange(event) {
-    this.setState({value: event.target.value});
-    this.searchMessagesByUser();
+    this.setState({value: event.target.value}, this.searchMessagesByUser);
   }
 
   clickColumn(column) {

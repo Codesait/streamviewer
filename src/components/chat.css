@@ -49,11 +49,21 @@
   color: #2196F3;
 }
 
+.chat-send-button.disabled > i {
+  color: #c8c8c8;
+}
+
 .chat-send-button:hover {
   cursor: pointer;
   background-color: #e1f2ff;
   box-shadow: inset 0px 0px 0px 1px #85b3ff,
                     0px 0px 0px 0.5px #85b3ff;
+}
+
+.chat-send-button.disabled:hover {
+  cursor: not-allowed;
+  background-color: #f7f7f7;
+  box-shadow: none;
 }
 
 .clear {

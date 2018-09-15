@@ -94,3 +94,7 @@ class StreamViewTestCase(TestCase):
             current = users_with_message_counts[i]
             previous = users_with_message_counts[i-1]
             self.assertTrue(current['username'] >= previous['username'])
+
+    #
+    # Searching messages by username
+    #

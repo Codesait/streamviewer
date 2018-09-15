@@ -10,20 +10,33 @@ import './errors.css';
 class Chat extends Component {
   constructor(props) {
     super(props);
-    this.textArea = React.createRef();
+    this.sendMessage = this.sendMessage.bind(this);
+    this.handleTextInputChange = this.handleTextInputChange.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
     this.retrievingMessages = false;
     this.posted = new Set();
     this.state = {liveChatId: null, videoId: this.props.videoId, messages:[], error: false};
+  }
 
-    this.sendMessage = () => {
-      // only send messages if we're authorized on youtube and our api
-      Auth.isInitialized.then(() => {
-        if (this.textArea && this.state.liveChatId) {
-          let text = this.textArea.value;
-          this.textArea.value = "";
-          this.sendMessageToYTandLocal(text, this.state.liveChatId, () => {});
-        }
-      });
+  async sendMessage() {
+    // only send messages if we're authorized on youtube and our api
+    await Auth.isInitialized;
+    if (this.textArea && this.state.value && this.state.liveChatId) {
+      let text = this.state.value;
+      this.textArea.value = '';
+      this.setState({value: ''});
+      this.sendMessageToYTandLocal(text, this.state.liveChatId, () => {});
+    }
+  }
+
+  handleTextInputChange(event) {
+    this.setState({value: event.target.value})
+  }
+
+  handleKeyPress(event) {
+    if (event.keyCode == 13) {
+      event.preventDefault();
+      this.sendMessage();
     }
   }
 
@@ -72,10 +85,10 @@ class Chat extends Component {
         return prevState;
       });
     } catch(err) {
-      console.error("Error sending live stream message.", err);
+      console.error('Error sending live stream message.', err);
       // remove temporary message if sending fails
       this.setState(prevState => ({
-        messages: prevState.messages.filter(message => message.id === '__temp-id__')
+        messages: prevState.messages.filter(message => message.id !== '__temp-id__')
       }));
     }
   }
@@ -152,13 +165,13 @@ class Chat extends Component {
       return (
         <div class='chat-error'>
           <div class='error-header'>
-            {"Sorry!"}
+            {'Sorry!'}
           </div>
           <div class='error-icon'>
-            {"☹️"}
+            {'☹️'}
           </div>
           <div>
-            {"We couldn't find an associated chat for this video."}
+            {'We couldn\'t find an associated chat for this video.'}
           </div>
         </div>
       )
@@ -172,11 +185,16 @@ class Chat extends Component {
       <div class='chat'>
         <div class='chat-messages'>
           {messages.map(message => <div><Message message={message}/></div>)}
-          <div style={{ float: "left", clear: "both"}} ref={el => {this.end = el; }}></div>
+          <div style={{ float: 'left', clear: 'both'}}
+               ref={el => {this.end = el; }}></div>
         </div>
         <div class='chat-input'>
-          <textarea ref={(textArea) => this.textArea = textArea} placeholder='Send chat message'></textarea>
-          <div class='chat-send-button' onClick={this.sendMessage}>
+          <textarea ref={(textArea) => this.textArea = textArea}
+                    placeholder='Send chat message'
+                    onChange={this.handleTextInputChange}
+                    onKeyDown={this.handleKeyPress}></textarea>
+          <div className={'chat-send-button ' + (this.state.value ? '' : 'disabled')}
+               onClick={this.sendMessage}>
             <i class='material-icons'>send</i>
           </div>
         </div>

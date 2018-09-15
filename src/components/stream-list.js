@@ -33,9 +33,10 @@ class StreamList extends Component {
   // by user: ewwink
   trackScrolling = () => {
     if (this.isBottom(this.streamsRef.current)) {
-      // store retrievingStreams in regular member because we need it to lock immediately
-      // store noMoreStreams in a state variable so we can use it to render a notification
-      // of no more streams to load
+      // store retrievingStreams in regular member because we need it to lock
+      // immediately
+      // store noMoreStreams in a state variable so we can use it to prompt
+      // rendering of an indicator of no more streams to load
       if (!this.retrievingStreams && !this.state.noMoreStreams) {
         this.getStreams();
       }
@@ -84,23 +85,23 @@ class StreamList extends Component {
       return null;
     }
     else {
+
       if (streams.length === 0 && !this.retrievingStreams) {
         this.getStreams();
         return streamLoader();
       }
-
-      let noMoreStreamsIndicator = null;
+      let streamListEndIndicator = null;
 
       if (this.state.noMoreStreams) {
-        noMoreStreamsIndicator = (
-          <div class='stream-list-end-indicator'>No more results</div>
+        streamListEndIndicator = (
+          <div class='stream-list-end-indicator'>No more results founds.</div>
         )
       }
 
       return (
         <div ref={this.streamsRef} class='stream-list-container'>
           {streams.map(stream => <div><StreamPreview data={stream}/></div>)}
-          {noMoreStreamsIndicator}
+          {streamListEndIndicator}
         </div>
       );
     }

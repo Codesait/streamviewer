@@ -77,7 +77,7 @@ def StreamSearchView(request, video_id):
     channel_id = video.channel_id
 
     messages = Message.objects.filter(live_chat__video__channel_id=channel_id)      \
-                              .filter(author__username__contains=                   \
+                              .filter(author__username__startswith=                   \
                                       request.query_params['username-starts-with']) \
                               .order_by('-created_at')
     status_code = 200

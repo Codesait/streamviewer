@@ -72,7 +72,6 @@ class Auth {
 
       if (this.channelInfo == null) {
         await this.getCurrentUserChannelInfo();
-        console.log(this.channelInfo);
       }
 
       this.isInitialized.resolve();

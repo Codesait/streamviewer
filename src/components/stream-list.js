@@ -49,7 +49,7 @@ class StreamList extends Component {
       'videoEmbeddable': true,
       'maxResults': 25,
       'type': 'video',
-      'regionCode': 'CA',
+      'regionCode': 'US',
       'relevanceLanguage': 'EN',
     }
     this.retrievingStreams = true;
@@ -89,9 +89,18 @@ class StreamList extends Component {
         return streamLoader();
       }
 
+      let noMoreStreamsIndicator = null;
+
+      if (this.state.noMoreStreams) {
+        noMoreStreamsIndicator = (
+          <div class='stream-list-end-indicator'>No more results</div>
+        )
+      }
+
       return (
         <div ref={this.streamsRef} class='stream-list-container'>
           {streams.map(stream => <div><StreamPreview data={stream}/></div>)}
+          {noMoreStreamsIndicator}
         </div>
       );
     }

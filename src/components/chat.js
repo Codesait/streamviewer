@@ -121,7 +121,7 @@ class Chat extends Component {
       this.setState(prevState => ({
         messages: [...prevState.messages, ...messages]
       }));
-      window.setTimeout(() => {
+      setTimeout(() => {
         this.getMessagesAndRecurse(liveChatId, response.result.nextPageToken)
       }, response.result.pollingIntervalMillis);
     }, (err) => {

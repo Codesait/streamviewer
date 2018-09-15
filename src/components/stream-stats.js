@@ -117,7 +117,7 @@ class StreamStats extends Component {
                 <StatsButtons videoId={videoId}/>
               </td>
               <td>
-                <input class='search-input' type='text' value={this.state.value} placeholder='Find messages by username' onChange={this.handleTextInputChange} />
+                <input class='search-input' type='text' value={this.state.value} placeholder='Search messages by username' onChange={this.handleTextInputChange} />
               </td>
             </tr>
             <tr>

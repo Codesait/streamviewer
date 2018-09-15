@@ -120,7 +120,7 @@ class Auth {
   async revokeToken() {
     try {
       const token = window.gapi.auth.getToken();
-      const response = await axios.post('/auth/revoke-token', {
+      await axios.post('/auth/revoke-token', {
         'client_id': this.clientId,
         'token': token.access_token,
       });

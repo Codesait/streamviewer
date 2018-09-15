@@ -15,7 +15,12 @@ class Chat extends Component {
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.retrievingMessages = false;
     this.posted = new Set();
-    this.state = {liveChatId: null, videoId: this.props.videoId, messages:[], error: false};
+    this.state = {
+      liveChatId: null,
+      videoId: this.props.videoId,
+      messages:[],
+      error: null
+    };
   }
 
   async sendMessage() {
@@ -34,7 +39,7 @@ class Chat extends Component {
   }
 
   handleKeyPress(event) {
-    if (event.keyCode == 13) {
+    if (event.keyCode === 13) {
       event.preventDefault();
       this.sendMessage();
     }
@@ -76,7 +81,7 @@ class Chat extends Component {
     }));
     try {
       const youtubeResponse = await this.sendLiveStreamMessage(text, this.state.liveChatId);
-      const localResponse = await StreamViewerAPI.sendMessageToChat(text, this.state.videoId);
+      await StreamViewerAPI.sendMessageToChat(text, this.state.videoId);
       this.posted.add(youtubeResponse.result.id);
       // replace temporary message with message from youtube response
       this.setState(prevState => {

@@ -3,8 +3,6 @@ import {
   Redirect
 } from 'react-router-dom';
 
-import config from '../config';
-
 class Main extends Component {
 
   render() {

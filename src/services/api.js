@@ -18,7 +18,7 @@ class StreamViewerAPI {
   }
 
   async sendMessageToChat(message, videoId) {
-    let response = await axios.post('/api/streams/' + videoId + '/message', {
+    await axios.post('/api/streams/' + videoId + '/message', {
       'message': message
     }, this.securityHeaders);
   }

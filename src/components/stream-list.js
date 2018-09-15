@@ -65,7 +65,7 @@ class StreamList extends Component {
 
     this.setState(prevState => ({
       streams: [...prevState.streams, ...response.result.items],
-      noMoreStreams: response.result.items.length == 0,
+      noMoreStreams: response.result.items.length === 0,
     }), () => {
       this.retrievingStreams = false;
     });
@@ -94,7 +94,7 @@ class StreamList extends Component {
 
       if (this.state.noMoreStreams) {
         streamListEndIndicator = (
-          <div class='stream-list-end-indicator'>No more results founds.</div>
+          <div class='stream-list-end-indicator'>No more results found.</div>
         )
       }
 

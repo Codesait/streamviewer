@@ -1,5 +1,5 @@
 import json
-import svapp.api.youtube as youtube
+import svapp.api.youtube as Youtube
 
 from django.core import serializers
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -32,7 +32,7 @@ def StreamMessageView(request, video_id):
 
     # we haven't seen this live chat before
     if (len(live_chat) == 0):
-        details = youtube.get_live_stream_details_from_video(video_id)
+        details = Youtube.get_live_stream_details_from_video(video_id)
         channel_id = details['snippet']['channelId']
         live_chat_id = details['liveStreamingDetails']['activeLiveChatId']
 

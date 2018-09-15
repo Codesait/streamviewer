@@ -58,7 +58,7 @@ class StreamStats extends Component {
     let direction = this.state.direction;
     let orderBy = this.state.orderBy;
 
-    if (column == orderBy) {
+    if (column === orderBy) {
       direction = (direction === '-') ? '' : '-';
     }
     else {
@@ -94,8 +94,6 @@ class StreamStats extends Component {
     const isSignedIn = this.props.isSignedIn;
     const isInitializing = this.props.isInitializing;
     const messages = this.state.messages;
-    const columns = this.state.columns;
-    const stats = this.state.stats;
 
     if (!isSignedIn) {
       if (!isInitializing) {

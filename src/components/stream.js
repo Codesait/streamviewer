@@ -38,10 +38,13 @@ class Stream extends Component {
                   <div class='video-buttons-text'>stats</div>
                 </a>
               </div>
-              <iframe width="480" height="385"
-                      src={"https://www.youtube.com/embed/" + videoId + "?autoplay=1"}
-                      frameborder="0" allow="autoplay; encrypted-media"
-                      allowfullscreen title={"Stream:" + videoId}></iframe>
+              <div class='iframe-container'>
+                <iframe
+                  width="480" height="385"
+                  src={"https://www.youtube.com/embed/" + videoId + "?autoplay=1"}
+                  frameborder="0" allow="autoplay; encrypted-media"
+                  allowfullscreen title={"Stream:" + videoId}></iframe>
+              </div>
             </div>
           </div>
           <div class='stream-flex-right'>

@@ -12,6 +12,7 @@ class Auth {
     this.observeSignInStatus = this.observeSignInStatus.bind(this);
     this.updateSigninStatus = this.updateSigninStatus.bind(this);
     this.exchangeToken = this.exchangeToken.bind(this);
+    this.getCurrentUserChannelInfo = this.getCurrentUserChannelInfo.bind(this);
     this.notifyObservers = this.notifyObservers.bind(this);
     this.getLocalAPIToken = this.getLocalAPIToken.bind(this);
     this.logout = this.logout.bind(this);
@@ -19,8 +20,7 @@ class Auth {
 
     this.listeners = [];
     this.isSignedIn = false;
-    this.apiToken = null;
-    this.refreshToken = null;
+    this.apiToken = this.channelInfo = this.refreshToken = null;
     this.clientId = 'gJFOzyJyjtq4BPpSoWuTcvJYDxV7nXb2fN9ue4zo';
     this.isInitialized = deferred();
   }
@@ -65,12 +65,16 @@ class Auth {
 
     else {
       document.getElementById('my-signin2').style.display = 'none';
-    }
 
-    if (isSignedIn && this.apiToken == null) {
-      await this.exchangeToken();
+      if (this.apiToken == null) {
+        await this.exchangeToken();
+      }
+
+      if (this.channelInfo == null) {
+        await this.getCurrentUserChannelInfo();
+      }
+
       this.isInitialized.resolve();
-
     }
 
     this.notifyObservers();
@@ -93,6 +97,21 @@ class Auth {
     }
   }
 
+  async getCurrentUserChannelInfo() {
+    try {
+      const response = await window.gapi.client.youtube.channels.list({
+        'part': 'snippet',
+        'mine': true,
+      });
+
+      if (response.result.items.length > 0) {
+        this.channelInfo = response.result.items[0];
+      }
+    } catch (err) {
+      console.error('Error retrieving Youtube channel information.', err);
+    }
+  }
+
   async logout() {
     await this.revokeToken();
     window.gapi.auth2.getAuthInstance().signOut();
@@ -101,7 +120,7 @@ class Auth {
   async revokeToken() {
     try {
       const token = window.gapi.auth.getToken();
-      const response = await axios.post('/auth/revoke-token', {
+      await axios.post('/auth/revoke-token', {
         'client_id': this.clientId,
         'token': token.access_token,
       });

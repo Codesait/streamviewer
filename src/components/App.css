@@ -1,6 +1,7 @@
 body {
   font-size: 12px;
   height: inherit;
+  overflow-x: hidden;
   width: inherit;
 }
 
@@ -22,9 +23,9 @@ html {
 .App {
   align-items: center;
   display: flex;
+  flex-wrap: wrap;
   height: inherit;
   justify-content: center;
-  flex-wrap: wrap;
   width: inherit;
 }
 

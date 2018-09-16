@@ -33,9 +33,10 @@ class StreamList extends Component {
   // by user: ewwink
   trackScrolling = () => {
     if (this.isBottom(this.streamsRef.current)) {
-      // store retrievingStreams in regular member because we need it to lock immediately
-      // store noMoreStreams in a state variable so we can use it to render a notification
-      // of no more streams to load
+      // store retrievingStreams in regular member because we need it to lock
+      // immediately
+      // store noMoreStreams in a state variable so we can use it to prompt
+      // rendering of an indicator of no more streams to load
       if (!this.retrievingStreams && !this.state.noMoreStreams) {
         this.getStreams();
       }
@@ -49,7 +50,7 @@ class StreamList extends Component {
       'videoEmbeddable': true,
       'maxResults': 25,
       'type': 'video',
-      'regionCode': 'CA',
+      'regionCode': 'US',
       'relevanceLanguage': 'EN',
     }
     this.retrievingStreams = true;
@@ -64,7 +65,7 @@ class StreamList extends Component {
 
     this.setState(prevState => ({
       streams: [...prevState.streams, ...response.result.items],
-      noMoreStreams: response.result.items.length == 0,
+      noMoreStreams: response.result.items.length === 0,
     }), () => {
       this.retrievingStreams = false;
     });
@@ -84,14 +85,23 @@ class StreamList extends Component {
       return null;
     }
     else {
+
       if (streams.length === 0 && !this.retrievingStreams) {
         this.getStreams();
         return streamLoader();
+      }
+      let streamListEndIndicator = null;
+
+      if (this.state.noMoreStreams) {
+        streamListEndIndicator = (
+          <div class='stream-list-end-indicator'>No more results found.</div>
+        )
       }
 
       return (
         <div ref={this.streamsRef} class='stream-list-container'>
           {streams.map(stream => <div><StreamPreview data={stream}/></div>)}
+          {streamListEndIndicator}
         </div>
       );
     }

@@ -1,7 +1,21 @@
+@media only screen and (max-width: 1000px) {
+  .stream-list-container {
+    padding: 0 !important;
+  }
+}
+
 .stream-list-container {
   align-self: flex-start;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 4rem 4rem 2rem;
+  padding: 4rem 2rem;
+}
+
+.stream-list-end-indicator {
+  color: #a3a3a3;
+  font-size: 1rem;
+  margin: 3rem 0;
+  text-align: center;
+  width: 100%;
 }

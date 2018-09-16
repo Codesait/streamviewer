@@ -2,8 +2,8 @@ import moment from 'moment'
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import Auth from '../services/api';
 import StreamViewerAPI from '../services/api';
+import Auth from '../services/auth';
 
 import './errors.css';
 import './stream-stats.css';
@@ -29,8 +29,14 @@ class StreamStats extends Component {
       'columns': ['Username', '# messages sent'],
       'orderBy': 'message_count',
       'direction': '-',
-      'error': false
+      'error': false,
+      'value': ''
     }
+  }
+
+  async componentDidMount() {
+   await Auth.isInitialized;
+   this.searchMessagesByUser();
   }
 
   async getStats(videoId) {
@@ -45,15 +51,14 @@ class StreamStats extends Component {
   }
 
   handleTextInputChange(event) {
-    this.setState({value: event.target.value});
-    this.searchMessagesByUser();
+    this.setState({value: event.target.value}, this.searchMessagesByUser);
   }
 
   clickColumn(column) {
     let direction = this.state.direction;
     let orderBy = this.state.orderBy;
 
-    if (column == orderBy) {
+    if (column === orderBy) {
       direction = (direction === '-') ? '' : '-';
     }
     else {
@@ -89,8 +94,6 @@ class StreamStats extends Component {
     const isSignedIn = this.props.isSignedIn;
     const isInitializing = this.props.isInitializing;
     const messages = this.state.messages;
-    const columns = this.state.columns;
-    const stats = this.state.stats;
 
     if (!isSignedIn) {
       if (!isInitializing) {
@@ -117,7 +120,7 @@ class StreamStats extends Component {
                 <StatsButtons videoId={videoId}/>
               </td>
               <td>
-                <input class='search-input' type='text' value={this.state.value} placeholder='Find messages by username' onChange={this.handleTextInputChange} />
+                <input class='search-input' type='text' value={this.state.value} placeholder='Search messages by username' onChange={this.handleTextInputChange} />
               </td>
             </tr>
             <tr>

@@ -8,9 +8,6 @@ import Chat from './chat';
 import './stream.css';
 
 class Stream extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     const videoId = this.props.match.params.id;
@@ -35,12 +32,19 @@ class Stream extends Component {
                   <i class="material-icons">home</i>
                   <div class='video-buttons-text'>home</div>
                 </a>
-                <a href={'/streams/' + videoId + '/stats'} class='video-button'>
+                <a href={'/streams/' + videoId + '/stats'}
+                   class='video-button'>
                   <i class="material-icons">bar_chart</i>
                   <div class='video-buttons-text'>stats</div>
                 </a>
               </div>
-              <iframe width="480" height="385" src={"https://www.youtube.com/embed/" + videoId + "?autoplay=1"} frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+              <div class='iframe-container'>
+                <iframe
+                  width="480" height="385"
+                  src={"https://www.youtube.com/embed/" + videoId + "?autoplay=1"}
+                  frameborder="0" allow="autoplay; encrypted-media"
+                  allowfullscreen title={"Stream:" + videoId}></iframe>
+              </div>
             </div>
           </div>
           <div class='stream-flex-right'>

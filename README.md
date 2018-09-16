@@ -54,7 +54,7 @@ for https://gist.github.com/osamakhn/aeed06830fbafa2ff9fd31a8326fec0d
 
   - Stats sorting isn't done locally, the client makes a request to the server each time on re-ordering. This is built on the assumption that at some point there will be enough users to require pagination, which will require a server request to get the correct rankings. If all records are retrievable, however, it would be better to do the sorting locally on the client.
 
-  - The username search uses "contains" (i.e strings can match any subset of the username) for examining usernames, which can get really expensive depending on the size of the dataset, but is nice for searching when you have a guarantee that your dataset size is small. In production I would likely swap this out for a prefix query on username, which can at least take advantage of some indexing.
+  - The username search uses "startswith" for examining the username field. This is because it a less expensive query than "contains", and can take advantage of indexing on the username field.
 
 ## Bonus points:
   1. I half-attempted to make it responsive, the stats page definitely isn't (it uses some rigid table elements) but the home and stream view are somewhat there.

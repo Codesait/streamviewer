@@ -5,24 +5,19 @@ import './message.css';
 class Message extends Component {
 
   render() {
-    const authorChannelId = this.props.message.snippet.authorChannelId;
-    const author = this.props.authors[authorChannelId];
-
-    if (!author) {
-      return null
-    }
+    const message = this.props.message;
 
     return (
     <div class='message'>
       <div class='message-author-thumbnail'>
-        <img src={author.thumbnails.default.url} alt={'Profile picture of ' + author.title}></img>
+        <img src={message.authorDetails.profileImageUrl} alt={'Profile picture of ' + message.authorDetails.displayName}></img>
       </div>
       <div class='message-text-fields'>
         <p class='message-author'>
-          {author.title}
+          {message.authorDetails.displayName}
         </p>
         <p class='message-content'>
-          {this.props.message.snippet.displayMessage}
+          {message.snippet.displayMessage}
         </p>
       </div>
     </div>)

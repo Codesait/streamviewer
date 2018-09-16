@@ -2,7 +2,6 @@ import Loader from 'react-loader-spinner'
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import config from '../config';
 import './App.css';
 import './loader.css';
 
@@ -48,8 +47,6 @@ class App extends Component {
   }
 
   render() {
-    let showSignIn = !this.state.isSignedIn && !this.state.isInitializing;
-
     return (
       <div>
         <div className='App'>

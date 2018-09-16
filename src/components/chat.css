@@ -1,6 +1,23 @@
 @media only screen and (max-width: 1000px) {
   .chat {
-    max-height: 240px;
+    height: 100% !important;
+  }
+
+  .chat-input {
+    border-top: 1px solid #dedede;
+  }
+
+  .chat-input > textarea {
+    border: none;
+  }
+
+  .chat-messages {
+    margin-bottom: 0 !important;
+    max-height: calc(100% - 3rem);
+  }
+
+  .chat-send-button {
+    border-left: 1px solid #dedede;
   }
 }
 
@@ -21,7 +38,8 @@
 
 .chat-input {
   display: flex;
-  height: 3rem;
+  height: 4rem;
+  min-height: 4rem;
 }
 
 .chat-input > textarea {
@@ -40,7 +58,7 @@
   height: inherit;
   vertical-align: middle;
   width: 3rem;
-  line-height: 4rem;
+  line-height: 5rem;
   text-align: center;
 }
 
@@ -51,7 +69,18 @@
 .chat-send-button:hover {
   cursor: pointer;
   background-color: #e1f2ff;
-  box-shadow: 0 0 1px 2px #d0eaf7;
+  box-shadow: inset 0px 0px 0px 1px #85b3ff,
+                    0px 0px 0px 0.5px #85b3ff;
+}
+
+.chat-send-button.disabled > i {
+  color: #c8c8c8;
+}
+
+.chat-send-button.disabled:hover {
+  cursor: not-allowed;
+  background-color: #f7f7f7;
+  box-shadow: none;
 }
 
 .clear {

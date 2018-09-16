@@ -1,6 +1,6 @@
 @media only screen and (max-width: 1000px) {
   .stream-list-container {
-    padding: 0;
+    padding: 0 !important;
   }
 }
 

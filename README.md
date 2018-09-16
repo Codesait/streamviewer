@@ -28,9 +28,9 @@ for https://gist.github.com/osamakhn/aeed06830fbafa2ff9fd31a8326fec0d
 ## Things left to do:
   - Get an SSL certificate, all client to server communication is currently done over HTTP.
   - Test everything. I cut writing tests to save time and feel awful about it.
-  - Query current user channel id on login so that messages received from the current user in chat can be ignored, and then current user messages can be appended immediately locally.
+  - ~~Query current user channel id on login so that messages received from the current user in chat can be ignored, and then current user messages can be appended immediately locally.~~
   - Add a dropdown for specifying what category to load streams from
-  - Add a visible indicator that there are no more streams to retrieve
+  - ~~Add a visible indicator that there are no more streams to retrieve~~
   - Add a nice logout button (I made one, but have it disabled in the demo)
   - Add a method for loading more messages in the username search, results are currently paginated with a limit of 50 per page.
   - Properly handle navigating to streams with invalid video_ids (currently just displays an empty YouTube embed and chat)
